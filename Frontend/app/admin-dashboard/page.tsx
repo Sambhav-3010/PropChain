@@ -234,7 +234,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background ">
       <Navbar />
 
       <main className="px-4 py-8">

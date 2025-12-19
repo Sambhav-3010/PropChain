@@ -129,7 +129,7 @@ export default function AddPropertyDetails() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-700 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-700 px-4 py-10 ">
       <div className="w-full max-w-xl bg-white/90 rounded-2xl shadow-xl p-8 backdrop-blur-sm">
         <h2 className="text-3xl font-bold text-center text-purple-800 mb-2">Add Property Details</h2>
         <p className="text-center text-purple-600 mb-6">

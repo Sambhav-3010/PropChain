@@ -57,7 +57,7 @@ export default function RegisterPropertyPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center animated-gradient px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center animated-gradient px-4 py-8 ">
       <div className="w-full max-w-2xl bg-white/60 rounded-2xl shadow-xl p-8 backdrop-blur-sm">
         <h1 className="text-3xl font-bold text-center text-purple-800 mb-6">Register Property</h1>
         <form onSubmit={handleSubmit} className="space-y-6">

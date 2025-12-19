@@ -438,6 +438,34 @@ contract LandRegistration1155 is ERC1155, AccessControl {
         return ids;
     }
 
+    //get properties owned by a user
+    function getLandsByOwner(address owner) 
+        external 
+        view 
+        returns (uint256[] memory ownedIds) 
+    {
+        uint256 totalProperties = _tokenIdCounter - 1;
+        uint256[] memory tempIds = new uint256[](totalProperties);
+        uint256 ownedCount = 0;
+        
+        // First pass: count and collect owned properties
+        for (uint256 i = 1; i <= totalProperties; i++) {
+            if (balanceOf(owner, i) > 0) {
+                tempIds[ownedCount] = i;
+                ownedCount++;
+            }
+        }
+        
+        // Create correctly sized array
+        ownedIds = new uint256[](ownedCount);
+        for (uint256 i = 0; i < ownedCount; i++) {
+            ownedIds[i] = tempIds[i];
+        }
+        
+        
+        return ownedIds;
+    }
+
     /// Get only properties that are for sale (marketplace filter)
     function getPropertiesForSale() 
         external 

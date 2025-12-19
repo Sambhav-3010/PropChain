@@ -109,7 +109,7 @@ export default function SignupPage() {
     };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden ">
       <div className="absolute inset-0 animated-gradient opacity-90"></div>
 
       <div className="absolute top-4 right-4 z-10">

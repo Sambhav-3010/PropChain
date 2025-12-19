@@ -70,7 +70,7 @@ export default function FeedbackPage() {
     return (
       <>
         <Navbar />
-        <div className="flex items-center justify-center mr-5 ml-5 min-h-[400px]">
+        <div className="flex items-center justify-center mr-5 ml-5 min-h-[400px] ">
           <Card className="w-full text-center">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-800/5 to-purple-100/5 rounded-lg"></div>
             <CardContent className="relative pt-6">
