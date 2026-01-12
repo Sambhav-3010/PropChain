@@ -88,9 +88,11 @@ export default function PropertyDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-purple-600" />
-        <p className="ml-4 text-lg">Loading Property Details...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+        <div className="w-16 h-16 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mb-4">
+          <Loader2 className="h-8 w-8 animate-spin text-bauhaus-blue" />
+        </div>
+        <p className="text-lg text-muted-foreground">Loading Property Details...</p>
       </div>
     )
   }
@@ -98,147 +100,180 @@ export default function PropertyDetailsPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center px-4">
-        <h2 className="text-2xl font-bold text-red-500 mb-4">An Error Occurred</h2>
-        <p className="text-muted-foreground">{error}</p>
-        <Button onClick={() => router.push("/marketplace")} className="mt-6">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Marketplace
-        </Button>
+        <Card className="max-w-md">
+          <CardContent className="pt-8 pb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+              <Building2 className="h-8 w-8 text-bauhaus-red" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">An Error Occurred</h2>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button onClick={() => router.push("/marketplace")} variant="primary">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Marketplace
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   if (!property) {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center px-4">
-            <h2 className="text-2xl font-bold mb-4">Property Not Found</h2>
-            <p className="text-muted-foreground">We couldn't find the details for this property.</p>
-            <Button onClick={() => router.push("/marketplace")} className="mt-6">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Marketplace
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center px-4">
+        <Card className="max-w-md">
+          <CardContent className="pt-8 pb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+              <Building2 className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Property Not Found</h2>
+            <p className="text-muted-foreground mb-6">We couldn't find the details for this property.</p>
+            <Button onClick={() => router.push("/marketplace")} variant="primary">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Marketplace
             </Button>
-        </div>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="px-4 py-8">
-        <div className="space-y-8 max-w-4xl mx-auto">
+      <main className="px-4 py-8 max-w-4xl mx-auto">
+        <div className="space-y-8">
           {/* Header */}
-          <div className="relative overflow-hidden rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-800 via-purple-600 to-purple-400"></div>
-            <div className="relative px-8 py-12">
+          <Card className="relative overflow-hidden bauhaus-bg-pattern">
+            <div className="relative px-6 md:px-8 py-8 md:py-12 z-10">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-6">
-                    <Building2 className="h-8 w-8 text-white" />
+                  <div className="w-16 h-16 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mr-6">
+                    <Building2 className="h-8 w-8 text-bauhaus-blue" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">{property.propertyName}</h1>
-                    <p className="text-purple-100">{property.propertyAddress}</p>
+                    <div className="w-10 h-1 mb-2 flex">
+                      <div className="flex-1 bg-bauhaus-red"></div>
+                      <div className="flex-1 bg-bauhaus-yellow"></div>
+                      <div className="flex-1 bg-bauhaus-blue"></div>
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">{property.propertyName}</h1>
+                    <p className="text-muted-foreground">{property.propertyAddress}</p>
                   </div>
                 </div>
                 <Button
                   onClick={() => router.back()}
                   variant="outline"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Go Back
                 </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Property Details Card */}
-          <Card className="glass">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Building2 className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
+                <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                  <Building2 className="h-4 w-4 text-bauhaus-blue" />
+                </div>
                 Property Overview
               </CardTitle>
               <CardDescription>Detailed information fetched from the blockchain.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Image Placeholder */}
-              <div className="w-full h-64 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                 <p className="text-muted-foreground">[ Property Image Placeholder ]</p>
+              <div className="w-full h-64 bg-muted rounded-xl flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+                <p className="text-muted-foreground">[ Property Image Placeholder ]</p>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-b pb-6">
-                <div className="space-y-2">
-                    <h3 className="text-lg font-semibold flex items-center">
-                        <MapPin className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
-                        Details
-                    </h3>
-                    <p className="text-muted-foreground"><strong>Address:</strong> {property.propertyAddress}</p>
-                    <p className="text-muted-foreground"><strong>Total Area:</strong> {property.totalLandArea} sq. meters</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-border pb-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold flex items-center">
+                    <span className="w-1 h-5 bg-bauhaus-red rounded-full mr-3"></span>
+                    Details
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Address</span>
+                      <p className="font-medium text-sm">{property.propertyAddress}</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Total Area</span>
+                      <p className="font-medium text-sm">{property.totalLandArea} sq. meters</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                    <h3 className="text-lg font-semibold flex items-center">
-                        <DollarSign className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
-                        Pricing
-                    </h3>
-                    <p className="text-2xl font-bold text-foreground">{property.wholePrice} ETH</p>
-                    <p className="text-muted-foreground">For the entire property</p>
+                <div className="space-y-4">
+                  <h3 className="font-semibold flex items-center">
+                    <span className="w-1 h-5 bg-bauhaus-yellow rounded-full mr-3"></span>
+                    Pricing
+                  </h3>
+                  <div className="p-4 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                    <span className="text-xs text-muted-foreground">Whole Property Price</span>
+                    <p className="text-2xl font-bold text-foreground flex items-center">
+                      <span className="w-2 h-2 rounded-full bg-bauhaus-blue mr-2"></span>
+                      {property.wholePrice} ETH
+                    </p>
+                  </div>
                 </div>
               </div>
-              
+
               {/* Fractional Ownership Details */}
               {property.isShared && (
-                <div className="space-y-4 border-b pb-6">
-                    <h3 className="text-lg font-semibold flex items-center">
-                        <Layers className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
-                        Fractional Ownership Details
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                        <div className="space-y-1">
-                            <span className="text-muted-foreground">Price Per Share:</span>
-                            <p className="font-medium">{property.pricePerShare} ETH</p>
-                        </div>
-                        <div className="space-y-1">
-                            <span className="text-muted-foreground">Available Shares:</span>
-                            <p className="font-medium">{property.availableShares}</p>
-                        </div>
-                        <div className="space-y-1">
-                            <span className="text-muted-foreground">Total Shares:</span>
-                            <p className="font-medium">{property.totalShares}</p>
-                        </div>
+                <div className="space-y-4 border-b border-border pb-6">
+                  <h3 className="font-semibold flex items-center">
+                    <span className="w-1 h-5 bg-bauhaus-blue rounded-full mr-3"></span>
+                    Fractional Ownership Details
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Price Per Share</span>
+                      <p className="font-semibold">{property.pricePerShare} ETH</p>
                     </div>
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Available Shares</span>
+                      <p className="font-semibold">{property.availableShares}</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Total Shares</span>
+                      <p className="font-semibold">{property.totalShares}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {/* Status Section */}
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold flex items-center">
-                    <Hash className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
-                    Status
+              <div className="space-y-4">
+                <h3 className="font-semibold flex items-center">
+                  <span className="w-1 h-5 bg-bauhaus-red rounded-full mr-3"></span>
+                  Status
                 </h3>
-                <div className="flex flex-wrap gap-4">
-                    <Badge className={property.forSale ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                        {property.forSale ? "For Sale" : "Not for Sale"}
-                    </Badge>
-                     <Badge className={property.isShared ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}>
-                        {property.isShared ? "Fractional Ownership" : "Whole Ownership"}
-                    </Badge>
+                <div className="flex flex-wrap gap-3">
+                  <Badge className={`${property.forSale ? 'bg-bauhaus-blue/10 text-bauhaus-blue' : 'bg-bauhaus-red/10 text-bauhaus-red'} border-none`}>
+                    {property.forSale ? "For Sale" : "Not for Sale"}
+                  </Badge>
+                  <Badge className={`${property.isShared ? 'bg-bauhaus-yellow/10 text-bauhaus-yellow' : 'bg-muted text-muted-foreground'} border-none`}>
+                    {property.isShared ? "Fractional Ownership" : "Whole Ownership"}
+                  </Badge>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
+              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
                 <Button
                   onClick={() => router.push(`/purchase/${propertyId}`)}
                   disabled={!property.forSale}
-                  className="flex-1 bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="primary"
+                  className="flex-1"
                 >
                   Initiate Purchase
                 </Button>
                 <Button
                   onClick={() => router.push("/marketplace")}
                   variant="outline"
-                  className="flex-1 border-purple-800/20 dark:border-purple-100/20 hover:bg-purple-800/5 dark:hover:bg-purple-100/5 bg-transparent"
+                  className="flex-1"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to Marketplace

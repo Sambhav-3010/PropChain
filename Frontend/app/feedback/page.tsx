@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Star, MessageSquare, Heart, Send } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 
 export default function FeedbackPage() {
   const [formData, setFormData] = useState({
@@ -70,29 +71,34 @@ export default function FeedbackPage() {
     return (
       <>
         <Navbar />
-        <div className="flex items-center justify-center mr-5 ml-5 min-h-[400px] ">
-          <Card className="w-full text-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-800/5 to-purple-100/5 rounded-lg"></div>
-            <CardContent className="relative pt-6">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-800 to-purple-100 flex items-center justify-center">
-                <Heart className="h-8 w-8 text-white animate-pulse" />
+        <div className="flex items-center justify-center min-h-[80vh] px-4">
+          <Card className="w-full max-w-md text-center relative overflow-hidden bauhaus-bg-pattern">
+            <CardContent className="relative pt-8 pb-8 z-10">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+                <Heart className="h-10 w-10 text-bauhaus-red animate-pulse" />
               </div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-800 to-purple-600 bg-clip-text text-transparent mb-2">
+              <div className="w-12 h-1 mx-auto mb-4 flex">
+                <div className="flex-1 bg-bauhaus-red"></div>
+                <div className="flex-1 bg-bauhaus-yellow"></div>
+                <div className="flex-1 bg-bauhaus-blue"></div>
+              </div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Thank You!
               </h2>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-6">
                 Your feedback has been received. We appreciate your input and
                 will review it shortly.
               </p>
               <Button
                 onClick={() => setShowSuccess(false)}
-                className="bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
+                variant="primary"
               >
                 Submit Another Feedback
               </Button>
             </CardContent>
           </Card>
         </div>
+        <Footer />
       </>
     );
   }
@@ -100,149 +106,148 @@ export default function FeedbackPage() {
   return (
     <>
       <Navbar />
-      <div className="mt-10 space-y-6">
-        {/* Header */}
-        
-        <div className="mx-5">
-          <div className="gradient-border">
-            <Card className="gradient-border-content border-0">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Heart className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
-                  We Value Your Opinion
-                </CardTitle>
-                <CardDescription>
-                  Tell us about your experience or suggest improvements
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="subject">Subject *</Label>
-                    <Input
-                      id="subject"
-                      placeholder="Brief description of your feedback"
-                      value={formData.subject}
-                      onChange={(e) =>
-                        handleInputChange("subject", e.target.value)
-                      }
-                      className={`bg-background/50 border-purple-800/20 dark:border-purple-100/20 focus:ring-purple-800 dark:focus:ring-purple-100 ${
-                        errors.subject ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors.subject && (
-                      <Alert variant="destructive">
-                        <AlertDescription>{errors.subject}</AlertDescription>
-                      </Alert>
-                    )}
+      <div className="min-h-screen bg-background py-8 px-4">
+        <div className="max-w-2xl mx-auto space-y-8">
+          {/* Header Card */}
+          <Card className="relative overflow-hidden bauhaus-bg-pattern">
+            <div className="relative px-6 py-8 z-10">
+              <div className="flex items-center">
+                <div className="w-14 h-14 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mr-4">
+                  <MessageSquare className="h-7 w-7 text-bauhaus-blue" />
+                </div>
+                <div>
+                  <div className="w-10 h-1 mb-2 flex">
+                    <div className="flex-1 bg-bauhaus-red"></div>
+                    <div className="flex-1 bg-bauhaus-yellow"></div>
+                    <div className="flex-1 bg-bauhaus-blue"></div>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="Please provide detailed feedback about your experience..."
-                      rows={6}
-                      value={formData.message}
-                      onChange={(e) =>
-                        handleInputChange("message", e.target.value)
-                      }
-                      className={`bg-background/50 border-purple-800/20 dark:border-purple-100/20 focus:ring-purple-800 dark:focus:ring-purple-100 ${
-                        errors.message ? "border-red-500" : ""
-                      }`}
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>
-                        {formData.message.length}/10 characters minimum
-                      </span>
-                      <span>{formData.message.length}/500 characters</span>
-                    </div>
-                    {errors.message && (
-                      <Alert variant="destructive">
-                        <AlertDescription>{errors.message}</AlertDescription>
-                      </Alert>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label>Rating (Optional)</Label>
-                    <div className="flex items-center space-x-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => handleRatingClick(star)}
-                          className="focus:outline-none transition-all hover:scale-110"
-                        >
-                          <Star
-                            className={`h-8 w-8 transition-colors ${
-                              star <= formData.rating
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300 hover:text-yellow-400"
-                            }`}
-                          />
-                        </button>
-                      ))}
-                      {formData.rating > 0 && (
-                        <span className="ml-3 text-sm text-muted-foreground">
-                          {formData.rating} out of 5 stars
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-4 pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        setFormData({ subject: "", message: "", rating: 0 });
-                        setErrors({});
-                      }}
-                      className="border-purple-800/20 dark:border-purple-100/20 hover:bg-purple-800/5 dark:hover:bg-purple-100/5"
-                    >
-                      Clear Form
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
-                    >
-                      {isLoading ? (
-                        "Submitting..."
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4" />
-                          Submit Feedback
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-purple-600"></div>
-          <div className="relative px-8 py-12">
-            <div className="flex items-center">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mr-4">
-                <MessageSquare className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white mb-2">
-                  Share Your Feedback
-                </h1>
-                <p className="text-purple-100">
-                  Help us improve with your valuable insights
-                </p>
+                  <h1 className="text-2xl font-bold text-foreground">
+                    Share Your Feedback
+                  </h1>
+                  <p className="text-muted-foreground text-sm">
+                    Help us improve with your valuable insights
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </Card>
+
+          {/* Feedback Form */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                  <Heart className="h-4 w-4 text-bauhaus-red" />
+                </div>
+                We Value Your Opinion
+              </CardTitle>
+              <CardDescription>
+                Tell us about your experience or suggest improvements
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject *</Label>
+                  <Input
+                    id="subject"
+                    placeholder="Brief description of your feedback"
+                    value={formData.subject}
+                    onChange={(e) =>
+                      handleInputChange("subject", e.target.value)
+                    }
+                    className={errors.subject ? "ring-2 ring-destructive" : ""}
+                  />
+                  {errors.subject && (
+                    <Alert variant="destructive" className="py-2">
+                      <AlertDescription>{errors.subject}</AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message *</Label>
+                  <Textarea
+                    id="message"
+                    placeholder="Please provide detailed feedback about your experience..."
+                    rows={6}
+                    value={formData.message}
+                    onChange={(e) =>
+                      handleInputChange("message", e.target.value)
+                    }
+                    className={`shadow-[inset_3px_3px_6px_var(--neu-shadow-dark),inset_-3px_-3px_6px_var(--neu-shadow-light)] bg-background rounded-xl ${errors.message ? "ring-2 ring-destructive" : ""}`}
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>
+                      {formData.message.length}/10 characters minimum
+                    </span>
+                    <span>{formData.message.length}/500 characters</span>
+                  </div>
+                  {errors.message && (
+                    <Alert variant="destructive" className="py-2">
+                      <AlertDescription>{errors.message}</AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Rating (Optional)</Label>
+                  <div className="flex items-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => handleRatingClick(star)}
+                        className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] hover:shadow-[4px_4px_8px_var(--neu-shadow-dark),-4px_-4px_8px_var(--neu-shadow-light)] active:shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)] transition-all"
+                      >
+                        <Star
+                          className={`h-5 w-5 transition-colors ${star <= formData.rating
+                              ? "text-bauhaus-yellow fill-bauhaus-yellow"
+                              : "text-muted-foreground"
+                            }`}
+                        />
+                      </button>
+                    ))}
+                    {formData.rating > 0 && (
+                      <span className="ml-3 text-sm text-muted-foreground">
+                        {formData.rating} out of 5 stars
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-4 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setFormData({ subject: "", message: "", rating: 0 });
+                      setErrors({});
+                    }}
+                  >
+                    Clear Form
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    variant="primary"
+                  >
+                    {isLoading ? (
+                      "Submitting..."
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Submit Feedback
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

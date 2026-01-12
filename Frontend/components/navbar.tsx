@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,16 @@ import { Menu, X, Building2 } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
+  const [userName, setUserName] = useState("");
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsAuth(localStorage.getItem("isAuthenticated") === "true");
+      setUserName(localStorage.getItem("userName") || "User");
+    }
+  }, []);
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -19,54 +28,59 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-800/5 to-purple-100/5"></div>
-      <div className="relative flex h-16 items-center justify-between px-4">
+    <nav className="sticky top-0 z-50 w-full bg-background shadow-[0_4px_12px_var(--neu-shadow-dark)]">
+      {/* Bauhaus accent stripe */}
+      <div className="h-1 w-full flex">
+        <div className="flex-1 bg-bauhaus-red"></div>
+        <div className="flex-1 bg-bauhaus-yellow"></div>
+        <div className="flex-1 bg-bauhaus-blue"></div>
+      </div>
+
+      <div className="relative flex h-16 items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-800 to-purple-100 flex items-center justify-center">
-            <Building2 className="h-5 w-5 text-white" />
+        <Link href="/" className="flex items-center space-x-3 group">
+          <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shadow-[4px_4px_8px_var(--neu-shadow-dark),-4px_-4px_8px_var(--neu-shadow-light)] group-hover:shadow-[5px_5px_10px_var(--neu-shadow-dark),-5px_-5px_10px_var(--neu-shadow-light)] transition-shadow duration-300">
+            <Building2 className="h-5 w-5 text-bauhaus-blue" />
           </div>
-          <span className="font-bold text-xl bg-gradient-to-r from-purple-800 to-purple-600 bg-clip-text text-transparent">
+          <span className="font-bold text-xl tracking-tight text-foreground">
             PropChain
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary relative group ${
-                pathname === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${pathname === item.href
+                  ? "bg-background shadow-[inset_3px_3px_6px_var(--neu-shadow-dark),inset_-3px_-3px_6px_var(--neu-shadow-light)] text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background hover:shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)]"
+                }`}
             >
               {item.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-800 to-purple-100 transition-all group-hover:w-full"></span>
             </Link>
           ))}
         </div>
 
         {/* Right Side */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <ThemeToggle />
-          <div className="hidden md:flex items-center space-x-2">
-            {typeof window !== "undefined" &&
-            localStorage.getItem("isAuthenticated") === "true" ? (
+
+          <div className="hidden md:flex items-center space-x-3">
+            {isAuth ? (
               <div className="relative">
                 <Button
-                  className="text-sm font-medium dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300"
+                  variant="default"
                   onClick={() => setIsOpen((prev) => !prev)}
+                  className="font-medium"
                 >
-                  {localStorage.getItem("userName") || "User"}
+                  {userName}
                 </Button>
                 {isOpen && (
-                  <div className="w-full absolute rounded-lg right-0 mt-2 dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300 shadow-lg z-10">
+                  <div className="absolute right-0 mt-2 w-40 rounded-xl bg-background shadow-[6px_6px_12px_var(--neu-shadow-dark),-6px_-6px_12px_var(--neu-shadow-light)] z-50">
                     <button
-                      className="w-full text-left px-4 py-2 text-sm dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300"
+                      className="w-full text-left px-4 py-3 text-sm font-medium text-foreground hover:bg-muted rounded-xl transition-colors"
                       onClick={() => {
                         localStorage.removeItem("isAuthenticated");
                         localStorage.removeItem("userName");
@@ -84,10 +98,7 @@ export function Navbar() {
                 <Button variant="ghost" asChild>
                   <Link href="/auth/login">Login</Link>
                 </Button>
-                <Button
-                  asChild
-                  className="bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
-                >
+                <Button variant="primary" asChild>
                   <Link href="/auth/signup">Sign Up</Link>
                 </Button>
               </>
@@ -97,7 +108,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             className="md:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
@@ -108,53 +119,41 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur">
-          <div className="container px-4 py-4 space-y-4">
+        <div className="md:hidden border-t border-border bg-background">
+          <div className="px-4 py-4 space-y-2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="block text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${pathname === item.href
+                    ? "bg-background shadow-[inset_3px_3px_6px_var(--neu-shadow-dark),inset_-3px_-3px_6px_var(--neu-shadow-light)] text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
             <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-              {typeof window !== "undefined" &&
-              localStorage.getItem("isAuthenticated") === "true" ? (
-                <div className="relative">
-                  <Button
-                    className="text-sm font-medium dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300"
-                    onClick={() => setIsOpen((prev) => !prev)}
-                  >
-                    {localStorage.getItem("userName") || "User"}
-                  </Button>
-                  {isOpen && (
-                    <div className="w-full absolute rounded-lg right-0 mt-2 dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300 shadow-lg z-10">
-                      <button
-                        className="w-full text-left px-4 py-2 text-sm dark:text-purple-800 dark:bg-purple-100 hover:dark:bg-purple-300"
-                        onClick={() => {
-                          localStorage.removeItem("isAuthenticated");
-                          localStorage.removeItem("userName");
-                          localStorage.removeItem("userEmail");
-                          window.location.href = "/";
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
+              {isAuth ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    localStorage.removeItem("isAuthenticated");
+                    localStorage.removeItem("userName");
+                    localStorage.removeItem("userEmail");
+                    window.location.href = "/";
+                  }}
+                >
+                  Logout
+                </Button>
               ) : (
                 <>
-                  <Button variant="ghost" asChild>
+                  <Button variant="ghost" asChild className="w-full">
                     <Link href="/auth/login">Login</Link>
                   </Button>
-                  <Button
-                    asChild
-                    className="bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
-                  >
+                  <Button variant="primary" asChild className="w-full">
                     <Link href="/auth/signup">Sign Up</Link>
                   </Button>
                 </>

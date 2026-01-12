@@ -30,6 +30,7 @@ interface StatCardProps {
   value: number | string
   icon: React.ReactNode
   isAlert?: boolean
+  accent?: string
 }
 
 interface SuspiciousActivity {
@@ -55,17 +56,21 @@ interface Transaction {
 }
 
 // Helper component for stat cards
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, isAlert = false }) => (
-  <Card className={`glass ${isAlert ? "border-red-500 dark:border-red-400" : ""}`}>
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      {icon}
-    </CardHeader>
-    <CardContent>
-      <div className={`text-2xl font-bold ${isAlert ? "text-red-500 dark:text-red-400" : ""}`}>
-        {value}
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon, isAlert = false, accent = "bg-bauhaus-blue" }) => (
+  <Card>
+    <CardContent className="pt-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className={`text-2xl font-bold mt-1 ${isAlert ? "text-bauhaus-red" : "text-foreground"}`}>
+            {value}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">{isAlert ? "Action Required" : "Overview"}</p>
+        </div>
+        <div className={`w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-[inset_3px_3px_6px_var(--neu-shadow-dark),inset_-3px_-3px_6px_var(--neu-shadow-light)]`}>
+          {icon}
+        </div>
       </div>
-      <p className="text-xs text-muted-foreground">{isAlert ? "Action Required" : "Overview"}</p>
     </CardContent>
   </Card>
 )
@@ -209,13 +214,13 @@ export default function AdminDashboardPage() {
   const getTransactionStatusColor = (status: Transaction["status"]) => {
     switch (status) {
       case "flagged":
-        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+        return "bg-bauhaus-red/10 text-bauhaus-red"
       case "addressed":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+        return "bg-bauhaus-blue/10 text-bauhaus-blue"
       case "dismissed":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400"
+        return "bg-muted text-muted-foreground"
       default:
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400"
+        return "bg-bauhaus-yellow/10 text-bauhaus-yellow"
     }
   }
 
@@ -234,57 +239,63 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background ">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="px-4 py-8">
+      <main className="px-4 py-8 max-w-7xl mx-auto">
         <div className="space-y-8">
           {/* Top Header */}
-          <div className="relative overflow-hidden rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-800 via-purple-600 to-purple-100"></div>
-            <div className="relative px-8 py-12">
+          <Card className="relative overflow-hidden bauhaus-bg-pattern">
+            <div className="relative px-6 md:px-8 py-8 md:py-12 z-10">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center">
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-6">
-                    <Building2 className="h-8 w-8 text-white" />
+                  <div className="w-16 h-16 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mr-6">
+                    <Building2 className="h-8 w-8 text-bauhaus-blue" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Land Registry Admin Dashboard</h1>
-                    <p className="text-purple-100">Centralized oversight for PropChain operations</p>
+                    <div className="w-12 h-1 mb-3 flex">
+                      <div className="flex-1 bg-bauhaus-red"></div>
+                      <div className="flex-1 bg-bauhaus-yellow"></div>
+                      <div className="flex-1 bg-bauhaus-blue"></div>
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">Land Registry Admin Dashboard</h1>
+                    <p className="text-muted-foreground">Centralized oversight for PropChain operations</p>
                   </div>
                 </div>
-                <div className="text-right text-white">
-                  <div className="flex items-center justify-end text-sm mb-1">
-                    <Wallet className="h-4 w-4 mr-2 text-purple-100" />
+                <div className="text-right">
+                  <div className="flex items-center justify-end text-sm mb-1 text-muted-foreground">
+                    <Wallet className="h-4 w-4 mr-2" />
                     <span className="font-mono">{walletAddress.substring(0, 10)}...{walletAddress.substring(walletAddress.length - 10)}</span>
                   </div>
-                  <div className="flex items-center justify-end text-sm">
-                    <Globe className="h-4 w-4 mr-2 text-purple-100" />
+                  <div className="flex items-center justify-end text-sm text-muted-foreground">
+                    <Globe className="h-4 w-4 mr-2" />
                     <span>{currentNetwork}</span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Key Stats */}
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Total Properties" value={totalProperties} icon={<Building2 className="h-5 w-5 text-muted-foreground" />} />
-            <StatCard title="Total Users" value={totalUsers} icon={<Users className="h-5 w-5 text-muted-foreground" />} />
+            <StatCard title="Total Properties" value={totalProperties} icon={<Building2 className="h-5 w-5 text-bauhaus-blue" />} />
+            <StatCard title="Total Users" value={totalUsers} icon={<Users className="h-5 w-5 text-bauhaus-yellow" />} />
             <StatCard
               title="Fraud Alerts"
               value={fraudAlerts}
-              icon={<AlertTriangle className={`h-5 w-5 ${fraudAlerts > 0 ? "text-red-500 dark:text-red-400" : "text-muted-foreground"}`} />}
+              icon={<AlertTriangle className={`h-5 w-5 ${fraudAlerts > 0 ? "text-bauhaus-red" : "text-muted-foreground"}`} />}
               isAlert={fraudAlerts > 0}
             />
-            <StatCard title="Today's Transactions" value={todayTransactions} icon={<ReceiptText className="h-5 w-5 text-muted-foreground" />} />
+            <StatCard title="Today's Transactions" value={todayTransactions} icon={<ReceiptText className="h-5 w-5 text-bauhaus-blue" />} />
           </div>
 
           {/* Fraud Monitoring */}
-          <Card className="glass">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <AlertTriangle className="mr-2 h-5 w-5 text-red-500 dark:text-red-400" />
+                <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                  <AlertTriangle className="h-4 w-4 text-bauhaus-red" />
+                </div>
                 Fraud Monitoring
               </CardTitle>
               <CardDescription>Monitor and manage suspicious activities and user pairs.</CardDescription>
@@ -292,8 +303,8 @@ export default function AdminDashboardPage() {
             <CardContent className="space-y-6">
               {/* Alert Box */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <AlertTriangle className="h-4 w-4 mr-2 text-red-500 dark:text-red-400" />
+                <h3 className="font-semibold flex items-center">
+                  <span className="w-1 h-5 bg-bauhaus-red rounded-full mr-3"></span>
                   Recent Suspicious Activities
                 </h3>
                 {suspiciousActivities.length > 0 ? (
@@ -301,10 +312,10 @@ export default function AdminDashboardPage() {
                     {suspiciousActivities.map((activity) => (
                       <li
                         key={activity.id}
-                        className="p-3 bg-red-100/20 dark:bg-red-900/10 rounded-lg border border-red-500/20 text-sm text-red-800 dark:text-red-400 flex justify-between items-center"
+                        className="p-3 rounded-xl bg-bauhaus-red/5 border border-bauhaus-red/20 text-sm flex justify-between items-center"
                       >
-                        <span>{activity.description}</span>
-                        <span className="text-xs text-red-600 dark:text-red-300">{activity.timestamp}</span>
+                        <span className="text-foreground">{activity.description}</span>
+                        <span className="text-xs text-muted-foreground">{activity.timestamp}</span>
                       </li>
                     ))}
                   </ul>
@@ -315,16 +326,16 @@ export default function AdminDashboardPage() {
 
               {/* Quick Actions */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <List className="h-4 w-4 mr-2 text-purple-800 dark:text-purple-100" />
+                <h3 className="font-semibold flex items-center">
+                  <span className="w-1 h-5 bg-bauhaus-yellow rounded-full mr-3"></span>
                   Quick Actions
                 </h3>
 
                 {/* Search Transaction History */}
-                <Card className="glass-sm">
+                <Card>
                   <CardContent className="pt-6 space-y-3">
-                    <h4 className="font-medium text-md flex items-center">
-                      <Search className="h-4 w-4 mr-2 text-purple-800 dark:text-purple-100" />
+                    <h4 className="font-medium flex items-center">
+                      <Search className="h-4 w-4 mr-2 text-bauhaus-blue" />
                       Search Transaction History
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -335,7 +346,6 @@ export default function AdminDashboardPage() {
                           placeholder="e.g., 0x..."
                           value={searchUser1}
                           onChange={(e) => setSearchUser1(e.target.value)}
-                          className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                         />
                       </div>
                       <div className="space-y-1">
@@ -345,13 +355,13 @@ export default function AdminDashboardPage() {
                           placeholder="e.g., 0x..."
                           value={searchUser2}
                           onChange={(e) => setSearchUser2(e.target.value)}
-                          className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                         />
                       </div>
                     </div>
                     <Button
                       onClick={handleSearchTransactions}
-                      className="w-full bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
+                      variant="primary"
+                      className="w-full"
                     >
                       Search Transactions
                     </Button>
@@ -359,10 +369,10 @@ export default function AdminDashboardPage() {
                 </Card>
 
                 {/* Flag/Unflag User Pair */}
-                <Card className="glass-sm">
+                <Card>
                   <CardContent className="pt-6 space-y-3">
-                    <h4 className="font-medium text-md flex items-center">
-                      <Flag className="h-4 w-4 mr-2 text-purple-800 dark:text-purple-100" />
+                    <h4 className="font-medium flex items-center">
+                      <Flag className="h-4 w-4 mr-2 text-bauhaus-red" />
                       Flag/Unflag User Pair
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -373,7 +383,6 @@ export default function AdminDashboardPage() {
                           placeholder="e.g., 0x..."
                           value={flagUser1}
                           onChange={(e) => setFlagUser1(e.target.value)}
-                          className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                         />
                       </div>
                       <div className="space-y-1">
@@ -383,7 +392,6 @@ export default function AdminDashboardPage() {
                           placeholder="e.g., 0x..."
                           value={flagUser2}
                           onChange={(e) => setFlagUser2(e.target.value)}
-                          className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                         />
                       </div>
                     </div>
@@ -394,12 +402,12 @@ export default function AdminDashboardPage() {
                         placeholder="e.g., Suspicious activity, multiple disputes"
                         value={flagReason}
                         onChange={(e) => setFlagReason(e.target.value)}
-                        className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                       />
                     </div>
                     <Button
                       onClick={handleFlagUserPair}
-                      className="w-full bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
+                      variant="accent"
+                      className="w-full"
                     >
                       {flaggedPairs.some(
                         (pair) =>
@@ -413,12 +421,12 @@ export default function AdminDashboardPage() {
                 </Card>
 
                 {/* View Flagged Pairs List */}
-                <Card className="glass-sm">
+                <Card>
                   <CardContent className="pt-6 space-y-3">
                     <Button
                       onClick={() => setShowFlaggedPairsList((prev) => !prev)}
                       variant="outline"
-                      className="w-full border-purple-800/20 dark:border-purple-100/20 bg-transparent flex items-center justify-center"
+                      className="w-full flex items-center justify-center"
                     >
                       <List className="h-4 w-4 mr-2" />
                       {showFlaggedPairsList ? "Hide Flagged Pairs" : "View Flagged Pairs List"}
@@ -430,9 +438,9 @@ export default function AdminDashboardPage() {
                             {flaggedPairs.map((pair) => (
                               <li
                                 key={pair.id}
-                                className="p-3 bg-red-100/10 dark:bg-red-900/5 rounded-lg border border-red-500/10 text-sm"
+                                className="p-3 rounded-xl bg-bauhaus-red/5 border border-bauhaus-red/10 text-sm"
                               >
-                                <p className="font-medium text-red-800 dark:text-red-400">
+                                <p className="font-medium text-foreground">
                                   Users: {pair.user1} & {pair.user2}
                                 </p>
                                 <p className="text-xs text-muted-foreground">Reason: {pair.reason}</p>
@@ -451,10 +459,12 @@ export default function AdminDashboardPage() {
           </Card>
 
           {/* Transaction Monitoring */}
-          <Card className="glass">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <ReceiptText className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
+                <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                  <ReceiptText className="h-4 w-4 text-bauhaus-blue" />
+                </div>
                 Transaction Monitoring
               </CardTitle>
               <CardDescription>View and manage all blockchain transactions.</CardDescription>
@@ -462,35 +472,35 @@ export default function AdminDashboardPage() {
             <CardContent>
               {transactions.length > 0 ? (
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-purple-800/20 dark:divide-purple-100/20">
+                  <table className="min-w-full divide-y divide-border">
                     <thead>
                       <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           ID
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Sender
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Receiver
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Amount
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Timestamp
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-purple-800/10 dark:divide-purple-100/10">
+                    <tbody className="divide-y divide-border">
                       {transactions.map((tx) => (
-                        <tr key={tx.id} className="hover:bg-background/50 transition-colors">
+                        <tr key={tx.id} className="hover:bg-muted/50 transition-colors">
                           <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                             {tx.id}
                           </td>
@@ -507,7 +517,7 @@ export default function AdminDashboardPage() {
                             {tx.timestamp}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap">
-                            <Badge className={getTransactionStatusColor(tx.status)}>
+                            <Badge className={`${getTransactionStatusColor(tx.status)} border-none`}>
                               {getTransactionStatusIcon(tx.status)}
                               <span className="ml-1 capitalize">{tx.status}</span>
                             </Badge>
@@ -518,7 +528,7 @@ export default function AdminDashboardPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="border-green-500/20 text-green-600 hover:bg-green-500/10"
+                                  className="text-bauhaus-blue hover:bg-bauhaus-blue/10"
                                   onClick={() => handleAddressIssue(tx.id)}
                                 >
                                   Address
@@ -526,7 +536,6 @@ export default function AdminDashboardPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="border-gray-500/20 text-gray-600 hover:bg-gray-500/10"
                                   onClick={() => handleDismissIssue(tx.id)}
                                 >
                                   Dismiss
@@ -537,7 +546,7 @@ export default function AdminDashboardPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-red-500/20 text-red-600 hover:bg-red-500/10"
+                                className="text-bauhaus-red hover:bg-bauhaus-red/10"
                                 onClick={() =>
                                   setTransactions((prev) =>
                                     prev.map((t) => (t.id === tx.id ? { ...t, status: "flagged" } : t)),

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { Building2, Wallet, DollarSign, CheckCircle, Loader2 } from "lucide-react"
+import { Building2, Wallet, DollarSign, CheckCircle, Loader2, MapPin } from "lucide-react"
 
 // Mock property data (should ideally come from a global state or API call)
 const mockProperties = [
@@ -172,12 +172,15 @@ export default function PaymentPage() {
 
   if (error && !property) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md text-center glass">
-          <CardContent className="pt-6">
-            <h2 className="text-2xl font-bold text-red-500 mb-2">Error</h2>
-            <p className="text-muted-foreground mb-4">{error}</p>
-            <Button onClick={() => router.push("/marketplace")}>Back to Marketplace</Button>
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <Card className="w-full max-w-md text-center">
+          <CardContent className="pt-8 pb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+              <Building2 className="h-8 w-8 text-bauhaus-red" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Error</h2>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button onClick={() => router.push("/marketplace")} variant="primary">Back to Marketplace</Button>
           </CardContent>
         </Card>
       </div>
@@ -187,8 +190,10 @@ export default function PaymentPage() {
   if (!property) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-purple-600" />
-        <p className="ml-4 text-lg text-muted-foreground">Loading property details...</p>
+        <div className="w-16 h-16 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mr-4">
+          <Loader2 className="h-8 w-8 animate-spin text-bauhaus-blue" />
+        </div>
+        <p className="text-lg text-muted-foreground">Loading property details...</p>
       </div>
     )
   }
@@ -198,21 +203,26 @@ export default function PaymentPage() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="px-4 py-8 flex items-center justify-center min-h-[60vh]">
-          <Card className="w-full max-w-md text-center glass">
-            <CardContent className="pt-6">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-600 to-green-300 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-white" />
+          <Card className="w-full max-w-md text-center relative overflow-hidden bauhaus-bg-pattern">
+            <CardContent className="relative pt-8 pb-8 z-10">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)]">
+                <CheckCircle className="h-10 w-10 text-bauhaus-blue" />
               </div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent mb-2">
+              <div className="w-12 h-1 mx-auto mb-4 flex">
+                <div className="flex-1 bg-bauhaus-red"></div>
+                <div className="flex-1 bg-bauhaus-yellow"></div>
+                <div className="flex-1 bg-bauhaus-blue"></div>
+              </div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Payment Successful!
               </h2>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-6">
                 Your purchase for "{property.title}" has been successfully initiated.
                 Transaction details will be updated on the blockchain shortly.
               </p>
               <Button
                 onClick={() => router.push("/profile")}
-                className="bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
+                variant="primary"
               >
                 Go to My Properties
               </Button>
@@ -225,64 +235,85 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background ">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="px-4 py-8">
-        <div className="space-y-8 max-w-3xl mx-auto">
+      <main className="px-4 py-8 max-w-3xl mx-auto">
+        <div className="space-y-8">
           {/* Header */}
-          <div className="relative overflow-hidden rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-800 via-purple-600 to-purple-100"></div>
-            <div className="relative px-8 py-12">
+          <Card className="relative overflow-hidden bauhaus-bg-pattern">
+            <div className="relative px-6 md:px-8 py-8 md:py-12 z-10">
               <div className="flex items-center">
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-6">
-                  <DollarSign className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-background flex items-center justify-center shadow-[inset_4px_4px_8px_var(--neu-shadow-dark),inset_-4px_-4px_8px_var(--neu-shadow-light)] mr-6">
+                  <DollarSign className="h-8 w-8 text-bauhaus-yellow" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white mb-2">Initiate Purchase</h1>
-                  <p className="text-purple-100">Complete your property transaction securely</p>
+                  <div className="w-10 h-1 mb-2 flex">
+                    <div className="flex-1 bg-bauhaus-red"></div>
+                    <div className="flex-1 bg-bauhaus-yellow"></div>
+                    <div className="flex-1 bg-bauhaus-blue"></div>
+                  </div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">Initiate Purchase</h1>
+                  <p className="text-muted-foreground">Complete your property transaction securely</p>
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Property Details Card */}
-            <Card className="glass">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Building2 className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
+                  <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                    <Building2 className="h-4 w-4 text-bauhaus-blue" />
+                  </div>
                   Property Details
                 </CardTitle>
                 <CardDescription>Review the property you are about to purchase.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <img
-                  src={property.image || "/placeholder.svg"}
-                  alt={property.title}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://placehold.co/300x200/E0E0E0/333333?text=${encodeURIComponent(property.title)}`;
-                  }}
-                />
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold">{property.title}</h3>
-                  <p className="text-muted-foreground flex items-center">
-                    <Building2 className="mr-2 h-4 w-4" /> {property.location}
-                  </p>
-                  <p className="text-muted-foreground flex items-center">
-                    <DollarSign className="mr-2 h-4 w-4" /> {property.price}
-                  </p>
-                  <p className="text-muted-foreground text-sm">Area: {property.area}</p>
+                <div className="aspect-video bg-muted rounded-xl overflow-hidden shadow-[inset_3px_3px_6px_var(--neu-shadow-dark),inset_-3px_-3px_6px_var(--neu-shadow-light)]">
+                  <img
+                    src={property.image || "/placeholder.svg"}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://placehold.co/300x200/E0E0E0/333333?text=${encodeURIComponent(property.title)}`;
+                    }}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-foreground">{property.title}</h3>
+                  <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                    <div className="flex items-center text-muted-foreground text-sm">
+                      <MapPin className="mr-2 h-4 w-4" /> {property.location}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Price</span>
+                      <p className="font-bold text-foreground flex items-center">
+                        <span className="w-2 h-2 rounded-full bg-bauhaus-blue mr-2"></span>
+                        {property.price}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-background shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)]">
+                      <span className="text-xs text-muted-foreground">Area</span>
+                      <p className="font-medium text-foreground">{property.area}</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Payment Details Card */}
-            <Card className="glass">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Wallet className="mr-2 h-5 w-5 text-purple-800 dark:text-purple-100" />
+                  <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shadow-[3px_3px_6px_var(--neu-shadow-dark),-3px_-3px_6px_var(--neu-shadow-light)] mr-3">
+                    <Wallet className="h-4 w-4 text-bauhaus-yellow" />
+                  </div>
                   Payment Information
                 </CardTitle>
                 <CardDescription>Enter your wallet details to proceed with payment.</CardDescription>
@@ -295,7 +326,6 @@ export default function PaymentPage() {
                     placeholder="e.g., 0xYourWalletAddress..."
                     value={fromWalletAddress}
                     onChange={(e) => setFromWalletAddress(e.target.value)}
-                    className="bg-background/50 border-purple-800/20 dark:border-purple-100/20"
                     disabled={isLoading}
                   />
                 </div>
@@ -305,7 +335,7 @@ export default function PaymentPage() {
                     id="to-wallet"
                     value={toWalletAddress}
                     readOnly
-                    className="bg-background/50 border-purple-800/20 dark:border-purple-100/20 cursor-not-allowed"
+                    className="cursor-not-allowed opacity-70"
                     disabled
                   />
                 </div>
@@ -315,13 +345,13 @@ export default function PaymentPage() {
                     id="amount"
                     value={amount}
                     readOnly
-                    className="bg-background/50 border-purple-800/20 dark:border-purple-100/20 cursor-not-allowed"
+                    className="cursor-not-allowed opacity-70"
                     disabled
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-red-100/20 text-red-800 dark:bg-red-900/20 dark:text-red-400 p-3 rounded-lg text-sm">
+                  <div className="p-3 rounded-xl bg-bauhaus-red/10 border border-bauhaus-red/20 text-sm text-bauhaus-red">
                     {error}
                   </div>
                 )}
@@ -329,7 +359,8 @@ export default function PaymentPage() {
                 <Button
                   onClick={handlePayment}
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500"
+                  variant="primary"
+                  className="w-full"
                 >
                   {isLoading ? (
                     <>
