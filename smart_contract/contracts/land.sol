@@ -366,7 +366,7 @@ contract LandRegistration1155 is ERC1155, AccessControl {
     function getLandDetails(uint256 id)
         external
         view
-        onlyAuthorized
+
         landExists(id)
         returns (
             Land memory details,

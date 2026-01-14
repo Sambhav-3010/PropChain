@@ -16,7 +16,7 @@ async function main() {
   const Land1155 = await hre.ethers.getContractFactory("LandRegistration1155");
 
   console.log("\n📦 Deploying LandRegistration1155 contract...");
-  
+
   // Pass a default metadata URI for ERC-1155
   const land = await Land1155.deploy("ipfs://metadata/{id}.json");
   await land.waitForDeployment();
@@ -24,35 +24,39 @@ async function main() {
   const contractAddress = await land.getAddress();
   console.log("✅ LandRegistration1155 deployed to:", contractAddress);
 
+  // Save address to file
+  const fs = require("fs");
+  fs.writeFileSync("deployment_address.txt", contractAddress);
+
   /* ─────────────── 3. Contract verification ─────────────── */
   console.log("\n🔍 Contract Configuration:");
-  
+
   // Display fraud threshold
   const fraudThreshold = await land.FRAUD_THRESHOLD();
   console.log("   • Volume Fraud Threshold:", fraudThreshold.toString(), "transactions");
-  
+
   // Verify admin role
   const [adminIsBuyer, adminIsSeller, adminIsAdmin] = await land.getUserRoles(deployer.address);
   console.log("   • Admin roles: Buyer=" + adminIsBuyer + ", Seller=" + adminIsSeller + ", Admin=" + adminIsAdmin);
 
   /* ─────────────── 4. NEW: Test Public Marketplace Functions ─────────────── */
   console.log("\n🏪 Testing Public Marketplace Functions:");
-  
+
   try {
     // Test getting total properties (should be 0 initially)
     const totalProperties = await land.getTotalProperties();
     console.log("   • Total Properties Initially:", totalProperties.toString());
-    
+
     // Test getting all property IDs (should be empty array)
     const allPropertyIds = await land.getAllPropertyIds();
     console.log("   • All Property IDs:", allPropertyIds.length > 0 ? allPropertyIds.map(id => id.toString()) : "[]");
-    
+
     // Test getting properties for sale (should be empty array)
     const propertiesForSale = await land.getPropertiesForSale();
     console.log("   • Properties For Sale:", propertiesForSale.length > 0 ? propertiesForSale.map(id => id.toString()) : "[]");
-    
+
     console.log("   ✅ Public marketplace functions working correctly");
-    
+
     // Test accessing marketplace details for non-existent property (should fail gracefully)
     try {
       await land.getMarketplaceDetails(999);
@@ -60,7 +64,7 @@ async function main() {
     } catch (error) {
       console.log("   ✅ Correctly handles non-existent property queries");
     }
-    
+
   } catch (error) {
     console.log("   ⚠️ Public marketplace function test failed:", error.message);
   }
@@ -74,7 +78,7 @@ async function main() {
 
   /* ─────────────── 6. Setup event listeners (for monitoring) ─────────────── */
   console.log("\n👂 Setting up event listeners for monitoring...");
-  
+
   // Listen for auto-role grants
   land.on("AutoRolesGranted", (user, event) => {
     console.log(`🎭 AUTO-ROLES GRANTED: User ${user} at block ${event.blockNumber}`);
@@ -106,7 +110,7 @@ async function main() {
   /* ────────────── 7. Demo transactions (only for local testing) ──────────── */
   if (process.env.DEMO_TRANSACTIONS === "true" && hre.network.name === "hardhat") {
     console.log("\n🧪 Running demo transactions (local network only)...");
-    
+
     try {
       // Test admin requesting auto-roles (should fail)
       try {
@@ -118,7 +122,7 @@ async function main() {
 
       console.log("   • Demo transactions require multiple test accounts");
       console.log("   • Use local Hardhat network for full testing");
-      
+
     } catch (error) {
       console.log("   ⚠️ Demo transactions skipped:", error.message);
     }
@@ -129,7 +133,7 @@ async function main() {
   console.log("   📝 Contract Address:", contractAddress);
   console.log("   🌐 Network:", hre.network.name);
   console.log("   👤 Admin Address:", deployer.address);
-  
+
   console.log("\n🛡️ Contract Features:");
   console.log("   • Land registration & trading ✓");
   console.log("   • Fractional ownership ✓");
@@ -172,7 +176,7 @@ async function main() {
   console.log("   • Use getPropertiesForSale() to filter available properties");
   console.log("   • Use getTotalProperties() for pagination and stats");
   console.log("   • Connect wallet only when user wants to buy/sell");
-  
+
   // Keep the process alive for a short time to catch initial events
   if (hre.network.name !== "hardhat") {
     console.log("\n⏳ Monitoring for 30 seconds for any immediate activity...");

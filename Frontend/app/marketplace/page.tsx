@@ -20,9 +20,9 @@ import {
 import { Navbar } from "@/components/navbar";
 
 import { ethers } from "ethers";
-import contractABI from "@/lib/LandReg.json"; // adjust path
+
 import { getContract, connectWallet } from "@/lib/ethers"; // adjust path
-import { convertUsdToEth } from '@/lib/price'; // Import the conversion function
+import { convertEthToInr } from '@/lib/price'; // Import the conversion function
 import { useAuth } from '@/hooks/use-auth';
 type Land = {
   id: number;
@@ -30,12 +30,13 @@ type Land = {
   totalLandArea: number;
   propertyName: string;
   forSale: boolean;
-  wholePrice: number;
+  wholePrice: any; // Stored as Wei (BigInt)
   isShared: boolean;
   totalShares: number;
   availableShares: number;
   pricePerShare: number;
-  ethPrice: string; // Required field now
+  ethPrice: string;
+  inrPrice: string; // New field for INR
 };
 
 
@@ -106,19 +107,26 @@ export default function MarketplacePage() {
             }
 
             const details = await contract.getMarketplaceDetails(id);
-            const ethPriceStr = await convertUsdToEth(Number(details[4]));
+            // details[4] is wholePrice in Wei.
+            const wholePriceWei = details[4];
+            // Convert Wei to ETH string for generic usage/debugging
+            const ethPriceStr = ethers.formatEther(wholePriceWei);
+            // Convert Wei to INR for display
+            const inrPriceStr = await convertEthToInr(ethPriceStr);
+
             return {
               id,
               propertyAddress: details[0],
               totalLandArea: Number(details[1]),
               propertyName: details[2],
               forSale: details[3],
-              wholePrice: Number(details[4]),
+              wholePrice: wholePriceWei, // Keep as BigInt/Value from contract
               isShared: details[5],
               totalShares: Number(details[6]),
               availableShares: Number(details[7]),
               pricePerShare: Number(details[8]),
               ethPrice: ethPriceStr,
+              inrPrice: inrPriceStr,
             };
           })
         )).filter((land): land is Land => land !== null);
@@ -132,7 +140,7 @@ export default function MarketplacePage() {
     }
   };
 
-  const handleBuy = async (landId: number, price: number, pps: number) => {
+  const handleBuy = async (landId: number, price: any, pps: number) => {
     try {
 
       const contract = await getContract();
@@ -303,7 +311,7 @@ export default function MarketplacePage() {
                           <>
                             <div className="text-xl font-bold text-foreground flex items-center">
                               <span className="w-2 h-2 rounded-full bg-bauhaus-blue mr-2"></span>
-                              {land.ethPrice} ETH
+                              {land.inrPrice} <span className="text-sm font-normal text-muted-foreground ml-1">({parseFloat(land.ethPrice).toFixed(4)} ETH)</span>
                             </div>
                             <Button
                               variant="primary"

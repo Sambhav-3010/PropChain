@@ -50,7 +50,7 @@ export default function AddPropertyDetails() {
       const signer = await provider.getSigner()
 
       // ✅ Fixed: Use contractABI directly (not contractABI.abi)
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer)
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer)
 
       console.log("Registering land with:", { addr, area, postal, name })
 

@@ -5,6 +5,8 @@ import { BrowserProvider, Contract, isAddress } from "ethers";
 import rawAbi from "./LandReg.json"; // If this is a full artifact, we’ll pick .abi below
 
 const CONTRACT_ADDRESS: string | undefined = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
+const CHAIN_ID = process.env.NEXT_PUBLIC_SEPOLIA_CHAIN_ID || '11155111'; // Default to Sepolia
+
 
 type EthereumLike = {
   request: (args: { method: string; params?: any[] }) => Promise<any>;
@@ -61,10 +63,33 @@ export const connectWallet = async (): Promise<string | null> => {
   }
 };
 
+export const switchNetwork = async () => {
+
+  const ethereum = getEthereumObject();
+  if (!ethereum) return;
+
+  const chainIdHex = "0x" + parseInt(CHAIN_ID as string).toString(16);
+
+  try {
+    await ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: chainIdHex }],
+    });
+  } catch (error: any) {
+    if (error.code === 4902) {
+      alert("Please add the Sepolia network to MetaMask");
+    }
+    console.error("switchNetwork error:", error);
+  }
+};
+
 export const getProviderAndSigner = async () => {
   assertClient();
   const ethereum = getEthereumObject();
   if (!ethereum) throw new Error("MetaMask not found");
+
+  await switchNetwork(); // Force network switch
+
   const provider = new BrowserProvider(ethereum);
   // Ensure accounts are requested so signer has an address
   await ethereum.request({ method: "eth_requestAccounts" });
@@ -78,7 +103,17 @@ export const getContract = async (): Promise<Contract> => {
   assertAddress(CONTRACT_ADDRESS);
 
   const { signer } = await getProviderAndSigner();
+
+  // Debug logs
+  const network = await signer.provider?.getNetwork();
+  console.log("--- Ethers Debug ---");
+  console.log("Target Config Address:", CONTRACT_ADDRESS);
+  console.log("Connected Chain ID:", network?.chainId.toString());
+  console.log("Connected Address:", await signer.getAddress());
+  console.log("--------------------");
+
   // Contract constructor: (address, abi, signerOrProvider)
+
   const contract = new Contract(CONTRACT_ADDRESS as string, ABI, signer);
   return contract;
 };
