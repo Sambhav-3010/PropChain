@@ -409,6 +409,14 @@ app.get('/health', (req, res) => {
     });
 });
 
+// Health check endpoint
+app.get('/', (req, res) => {
+    res.json({
+        status: 'ok',
+        service: 'Service Started',
+    });
+});
+
 // Start server
 async function startServer() {
     // Try to load face models on startup
