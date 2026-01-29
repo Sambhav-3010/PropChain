@@ -147,7 +147,7 @@ export default function RegisterPropertyPage() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/verify_identity", formData, {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/verify_identity`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
